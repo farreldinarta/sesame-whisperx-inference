@@ -1,0 +1,60 @@
+name: CD Pipeline
+
+on:
+  workflow_run:
+    workflows: ["CI Build"]
+    types:
+      - completed
+
+jobs:
+
+  build:
+
+    runs-on: self-hosted
+
+    env:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}      
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      APP_NAME: ${{ secrets.APP_NAME }}    
+      HUGGINGFACE_ACCESS_TOKEN: ${{ secrets.HUGGINGFACE_ACCESS_TOKEN }}    
+
+    steps:
+    - name: Checkout Repo 
+      uses: actions/checkout@v4      
+
+    - name: Load .env variables globally
+      run: |
+        cp .env.example .env
+        grep -v '^#' .env | grep -Ev '^(DOCKER_USERNAME|APP_NAME|DOCKER_PASSWORD|HUGGINGFACE_ACCESS_TOKEN)=' >> $GITHUB_ENV        
+
+    - name: Login DockerHub
+      run: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin      
+
+    - name: Debug Environment Variables
+      run: |
+        echo "DOCKER_USERNAME: $DOCKER_USERNAME"
+        echo "APP_NAME: $APP_NAME"
+        echo "HUGGINGFACE_ACCESS_TOKEN: $HUGGINGFACE_ACCESS_TOKEN"
+        echo "APP_PORT: $APP_PORT"
+        echo "CONTAINER_PORT: $CONTAINER_PORT"
+        echo "Full Docker Image Name: $DOCKER_USERNAME/$APP_NAME" 
+
+    - name: Refresh Container
+      run: |
+        docker stop $APP_NAME || true
+        docker rm $APP_NAME || true
+        docker build --build-arg PORT=$APP_PORT --build-arg ENVIRONMENT=production -t $DOCKER_USERNAME/$APP_NAME .
+
+    - name: Run Container 
+      run: |
+        docker run -d \
+          --name "$APP_NAME" \
+          -p "$APP_PORT:$CONTAINER_PORT" \
+          -e ENVIRONMENT=production \
+          -e HUGGINGFACE_ACCESS_TOKEN=$HUGGINGFACE_ACCESS_TOKEN \
+          "$DOCKER_USERNAME/$APP_NAME"
+
+    # - name: Push to DockerHub
+    #   run: |
+    #     docker tag $DOCKER_USERNAME/$APP_NAME $DOCKER_USERNAME/$APP_NAME:latest
+    #     docker push $DOCKER_USERNAME/$APP_NAME:latest
