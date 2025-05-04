@@ -3,7 +3,7 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "sesame-csm-inference"
+name = "sesame-whisperx-inference"
 version = "0.1.0"
 dependencies = [
     "fastapi[standard]>=0.113.0,<0.114.0",
@@ -11,13 +11,17 @@ dependencies = [
     "pydantic-settings",
     "pytest",
     "pytest-asyncio",
-    "torch==2.4.0",
-    "torchaudio==2.4.0",
+    "torch>=2",
+    "torchaudio>=2",
     "tokenizers==0.21.0",
     "transformers==4.49.0",
     "huggingface_hub==0.28.1",
     "moshi==0.2.2",
     "torchtune==0.4.0",
     "torchao==0.9.0",
-    "silentcipher @ git+https://github.com/SesameAILabs/silentcipher@master"
+    "silentcipher @ git+https://github.com/SesameAILabs/silentcipher@master",
+    "faster-whisper==1.0.0",
+    "pandas",
+    "setuptools>=65",
+    "nltk"
 ]
