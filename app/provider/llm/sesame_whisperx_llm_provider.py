@@ -13,22 +13,27 @@ env = get_environment_variables()
 @singleton
 class WhisperXLLMProvider(LLMInterface):
   __device : str
+  __compute_type : str
+  __model_type : str
 
   def __init__(self):
 
     if torch.backends.mps.is_available():
         self.__device = "mps"
         self.__compute_type = "float16"
+        self.__model_type = "large-v3"
     elif torch.cuda.is_available():
         self.__device = "cuda"
         self.__compute_type = "float16"
+        self.__model_type = "large-v3"
     else:
         self.__device = "cpu"
         self.__compute_type = "int8"
+        self.__model_type = "small"
 
     print("Used Device : ", self.__device)
 
-    self.__model = WhisperModel("large-v3", device=self.__device, compute_type=self.__compute_type)
+    self.__model = WhisperModel(self.__model_type, device=self.__device, compute_type=self.__compute_type)
     
   async def inference(self, audio) -> list:
     segments, _= self.__model.transcribe(
