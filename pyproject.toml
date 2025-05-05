@@ -14,7 +14,6 @@ dependencies = [
     "torch>=2",
     "torchaudio>=2",
     "tokenizers>=0.13,<0.16",
-    "transformers==4.49.0",
     "huggingface_hub==0.28.1",
     "moshi==0.2.2",
     "torchtune==0.4.0",
