@@ -1,4 +1,5 @@
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+from app.dto.inference_dto import GenerateTextInferenceRequest
 from app.service.inference_service import get_inference_service
 
 router = APIRouter()
@@ -16,7 +17,7 @@ async def generate(websocket: WebSocket):
             audio_buffer += chunk
 
             if len(audio_buffer) > 32000:
-                result = await service.generate(audio_buffer)
+                result = await service.generate(GenerateTextInferenceRequest(audio=audio_buffer))
                 await websocket.send_text(result.text)
                 audio_buffer = b""  
 
