@@ -8,6 +8,7 @@ ENV CONTAINER_PORT=$CONTAINER_PORT
 WORKDIR /code
 
 RUN apt-get update && \
+    apt-get install -y ffmpeg && \
     apt-get install -y --no-install-recommends build-essential git && \
     rm -rf /var/lib/apt/lists/*
 
