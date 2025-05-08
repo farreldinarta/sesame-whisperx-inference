@@ -15,7 +15,7 @@ class WhisperXLLMProviderMock(LLMInterface):
       self.__inference_returning_value = returning
       return self
 
-    async def inference(self, audio) -> list:
+    async def inference(self, audio) -> str:
       if (prompt != self.__inference_expected_arg):
         raise TestFailureException(f"""
           {inspect.currentframe().f_code.co_name} function argument mismatch :

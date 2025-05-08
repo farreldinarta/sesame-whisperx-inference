@@ -31,22 +31,15 @@ class InferenceService:
     return temp_path
 
   async def generate(self, payload : GenerateTextInferenceRequest) -> GenerateTextInferenceResponse:
-
-    audio = self.produce_audio_file(payload.audio)
-
-    segments : list = await self.__llm.get_whisperx_model().inference(audio)
-    if not segments:
+    text : str = await self.__llm.get_whisperx_model().inference(payload.audio)
+    if not text:
       raise WebSocketAPIException(
         status=400,
         message="Failed to transcribe audio",
         error="Failed to transcribe audio"
       )
     
-    if os.path.exists(audio):
-      os.remove(audio)    
-    
-    merged_text = self.segments_to_string(segments)
-    return GenerateTextInferenceResponse(text=merged_text)
+    return GenerateTextInferenceResponse(text=text)
 
 def get_inference_service(llm : LLM = Depends(get_llm)) -> InferenceService:
   return InferenceService(llm=llm)

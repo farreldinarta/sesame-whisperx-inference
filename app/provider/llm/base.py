@@ -1,7 +1,7 @@
 from fastapi import Depends
 from app.utils.object import singleton
 from app.provider.llm.interface import LLMInterface
-from app.provider.llm.sesame_whisperx_llm_provider import get_whisperx_model
+from app.provider.llm.sesame_whisperx_stream_llm_provider import get_whisperx_model
 
 @singleton
 class LLM:
