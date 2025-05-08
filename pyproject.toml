@@ -12,6 +12,8 @@ dependencies = [
     "pytest",
     "pytest-asyncio",
     "torch>=2",
+    "librosa",
+    "soundfile",
     "torchaudio>=2",
     "tokenizers>=0.13,<0.16",
     "huggingface_hub==0.28.1",

@@ -5,5 +5,5 @@ from abc import ABC, abstractmethod
 class LLMInterface(ABC):
 
   @abstractmethod
-  async def inference(self, audio) -> list:
+  async def inference(self, audio) -> str:
     pass
